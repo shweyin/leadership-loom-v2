@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { DASHBOARD, SIGN_IN } from '../constants/routes';
-import { USER } from '../constants/roles';
 
 export const SignUp = () => {
   const [name, setName] = useState('');
@@ -18,26 +17,22 @@ export const SignUp = () => {
     setError(null);
 
     try {
-      // Sign up with Supabase Auth
+      // Sign up with Supabase Auth - user profile will be created automatically via trigger
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            name: name,
+          },
+        },
       });
 
       if (authError) throw authError;
       if (!authData.user) throw new Error('No user returned from signup');
 
-      // Create user profile
-      const { error: profileError } = await supabase.from('users').insert({
-        id: authData.user.id,
-        name,
-        email,
-        organization_id: null, // Will be set when joining/creating organization
-        auth_provider: 'email',
-        roles: [USER],
-      });
-
-      if (profileError) throw profileError;
+      // Wait a moment for the trigger to complete and session to be established
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       navigate(DASHBOARD);
     } catch (error: any) {

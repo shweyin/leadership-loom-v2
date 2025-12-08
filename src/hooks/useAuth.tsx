@@ -1,8 +1,10 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { User, Session, AuthChangeEvent } from '@supabase/supabase-js';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { User as AppUser } from '../types/database';
+import { SIGN_IN } from '../constants/routes';
 
 interface AuthContextType {
   user: User | null;
@@ -33,6 +35,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [appUser, setAppUser] = useState<AppUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -96,6 +99,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(null);
       setAppUser(null);
       setSession(null);
+      navigate(SIGN_IN);
     } catch (error) {
       console.error('Error signing out:', error);
       throw error;

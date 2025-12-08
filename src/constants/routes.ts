@@ -2,6 +2,7 @@ export const LANDING = '/';
 export const SIGN_IN = '/signin';
 export const SIGN_UP = '/signup';
 export const PASSWORD_RESET = '/password-reset';
+export const UPDATE_PASSWORD = '/update-password';
 export const DASHBOARD = '/dashboard';
 export const SURVEY = '/dashboard/survey';
 export const EMPLOYEE = '/dashboard/employee';
