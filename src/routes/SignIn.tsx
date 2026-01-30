@@ -1,11 +1,12 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
-import { DASHBOARD, SIGN_UP, PASSWORD_RESET } from '../constants/routes';
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { supabase } from "../lib/supabase";
+import { DASHBOARD, SIGN_UP, PASSWORD_RESET } from "../constants/routes";
+import { Button } from "../components/ui/button";
 
 export const SignIn = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ export const SignIn = () => {
   const handleGoogleSignIn = async () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider: "google",
         options: {
           redirectTo: `${window.location.origin}/dashboard`,
         },
@@ -100,7 +101,7 @@ export const SignIn = () => {
             <div className="text-sm">
               <Link
                 to={PASSWORD_RESET}
-                className="font-medium text-primary hover:text-primary/80"
+                className="font-medium text-gray-600 dark:text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
               >
                 Forgot your password?
               </Link>
@@ -108,13 +109,13 @@ export const SignIn = () => {
           </div>
 
           <div>
-            <button
+            <Button
               type="submit"
               disabled={loading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
             >
-              {loading ? 'Signing in...' : 'Sign in'}
-            </button>
+              {loading ? "Signing in..." : "Sign in"}
+            </Button>
           </div>
 
           <div className="relative">
@@ -158,10 +159,10 @@ export const SignIn = () => {
 
           <div className="text-center">
             <span className="text-sm text-gray-600 dark:text-gray-400">
-              Don't have an account?{' '}
+              Don't have an account?{" "}
               <Link
                 to={SIGN_UP}
-                className="font-medium text-primary hover:text-primary/80"
+                className="font-medium text-gray-600 dark:text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
               >
                 Sign up
               </Link>
