@@ -54,62 +54,65 @@ export function QuestionYesNo({
   const isNoSelected = value === `${question}-No`;
 
   return (
-    <div
-      ref={containerRef}
-      tabIndex={0}
-      onKeyDown={handleKeyDown}
-      className={cn(
-        'border-b border-gray-200 dark:border-gray-700 pb-6 p-4 rounded-lg focus:outline-none focus:border focus:border-gray-400 dark:focus:border-gray-500',
-        className
-      )}
-    >
-      <div className="mb-4">
-        <h4 className="font-semibold text-base mb-2">{descriptor}</h4>
-        <p className="text-sm text-gray-600 dark:text-gray-400">{criteria}</p>
-      </div>
+    <>
+      <div
+        ref={containerRef}
+        tabIndex={0}
+        onKeyDown={handleKeyDown}
+        className={cn(
+          'pb-6 p-4 rounded-lg focus:outline-none focus:border focus:border-gray-400 dark:focus:border-gray-500',
+          className
+        )}
+      >
+        <div className="mb-4">
+          <h4 className="font-semibold text-base mb-2">{descriptor}</h4>
+          <p className="text-sm text-gray-600 dark:text-gray-400">{criteria}</p>
+        </div>
 
-      <div className="flex gap-6">
-        <Label
-          onClick={() => handleSelect('Yes')}
-          className={cn(
-            'flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border-2 transition-all',
-            isYesSelected
-              ? 'border-green-500 bg-green-50 dark:bg-green-900/30'
-              : 'border-transparent hover:border-green-300'
-          )}
-        >
-          <input
-            type="radio"
-            name={question}
-            value={`${question}-Yes`}
-            checked={isYesSelected}
-            onChange={() => handleSelect('Yes')}
-            className="w-4 h-4"
-            tabIndex={-1}
-          />
-          <span className="text-green-600 dark:text-green-400 font-medium">Yes</span>
-        </Label>
-        <Label
-          onClick={() => handleSelect('No')}
-          className={cn(
-            'flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border-2 transition-all',
-            isNoSelected
-              ? 'border-red-500 bg-red-50 dark:bg-red-900/30'
-              : 'border-transparent hover:border-red-300'
-          )}
-        >
-          <input
-            type="radio"
-            name={question}
-            value={`${question}-No`}
-            checked={isNoSelected}
-            onChange={() => handleSelect('No')}
-            className="w-4 h-4"
-            tabIndex={-1}
-          />
-          <span className="text-red-600 dark:text-red-400 font-medium">No</span>
-        </Label>
+        <div className="flex gap-6">
+          <Label
+            onClick={() => handleSelect('Yes')}
+            className={cn(
+              'flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border-2 transition-all',
+              isYesSelected
+                ? 'border-green-500 bg-green-50 dark:bg-green-900/30'
+                : 'border-transparent hover:border-green-300'
+            )}
+          >
+            <input
+              type="radio"
+              name={question}
+              value={`${question}-Yes`}
+              checked={isYesSelected}
+              onChange={() => handleSelect('Yes')}
+              className="w-4 h-4"
+              tabIndex={-1}
+            />
+            <span className="text-green-600 dark:text-green-400 font-medium">Yes</span>
+          </Label>
+          <Label
+            onClick={() => handleSelect('No')}
+            className={cn(
+              'flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border-2 transition-all',
+              isNoSelected
+                ? 'border-red-500 bg-red-50 dark:bg-red-900/30'
+                : 'border-transparent hover:border-red-300'
+            )}
+          >
+            <input
+              type="radio"
+              name={question}
+              value={`${question}-No`}
+              checked={isNoSelected}
+              onChange={() => handleSelect('No')}
+              className="w-4 h-4"
+              tabIndex={-1}
+            />
+            <span className="text-red-600 dark:text-red-400 font-medium">No</span>
+          </Label>
+        </div>
       </div>
-    </div>
+      <hr className="my-6 border-gray-200 dark:border-gray-700" />
+    </>
   );
 }
