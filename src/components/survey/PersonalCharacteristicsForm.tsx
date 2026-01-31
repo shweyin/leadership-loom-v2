@@ -63,6 +63,9 @@ export function PersonalCharacteristicsForm({
       {/* Radio Questions (Learning) */}
       <div className="space-y-8">
         <h3 className="text-lg font-semibold">Learning Ability</h3>
+        <p className="text-xs text-gray-400 dark:text-gray-500">
+          Press 1-6 to select
+        </p>
         {category3Questions.radioQuestions.map((q, index) => (
           <div key={q.question} data-radio-index={index}>
             <QuestionRadio
@@ -81,6 +84,9 @@ export function PersonalCharacteristicsForm({
       {/* Yes/No Questions */}
       <div className="space-y-6 mt-12">
         <h3 className="text-lg font-semibold">Personal Attributes</h3>
+        <p className="text-xs text-gray-400 dark:text-gray-500">
+          Press Y or 1 for Yes, N or 2 for No
+        </p>
         {category3Questions.yesNoQuestions.map((q, index) => (
           <div key={q.question} data-yesno-index={index}>
             <QuestionYesNo

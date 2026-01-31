@@ -21,8 +21,11 @@ export function PastPerformanceForm({ data, onChange }: PastPerformanceFormProps
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold mb-2">{category4Titles.title}</h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-6">
+        <p className="text-gray-600 dark:text-gray-400">
           Evaluate the employee's past performance and development.
+        </p>
+        <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
+          Press Y or 1 for Yes, N or 2 for No
         </p>
       </div>
 

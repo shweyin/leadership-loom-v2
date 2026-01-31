@@ -24,6 +24,9 @@ export function BusinessAcumenForm({ data, onChange }: BusinessAcumenFormProps) 
         <p className="text-gray-600 dark:text-gray-400">
           {category2x4Titles.summary}
         </p>
+        <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
+          Press 1-6 to select
+        </p>
       </div>
 
       <div className="space-y-8 mt-8">

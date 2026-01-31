@@ -55,7 +55,7 @@ export function QuestionRadio({
       tabIndex={0}
       onKeyDown={handleKeyDown}
       className={cn(
-        'border-b border-gray-200 dark:border-gray-700 pb-6 mb-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2',
+        'border-b border-gray-200 dark:border-gray-700 pb-6 mb-6 p-4 rounded-lg focus:outline-none focus:border focus:border-gray-400 dark:focus:border-gray-500',
         className
       )}
     >
@@ -69,11 +69,6 @@ export function QuestionRadio({
           <span className="font-semibold">Effective: </span>
           {effectiveBehavior}
         </div>
-      </div>
-
-      {/* Keyboard hint */}
-      <div className="mb-2 text-xs text-gray-400 dark:text-gray-500 text-center">
-        Press 1-6 to select
       </div>
 
       {/* Radio buttons */}
