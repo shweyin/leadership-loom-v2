@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './hooks/useAuth';
 import { ProtectedRoute } from './routes/ProtectedRoute';
+import { AppLayout } from './components/layout/AppLayout';
 import { SignIn } from './routes/SignIn';
 import { SignUp } from './routes/SignUp';
 import { PasswordReset } from './routes/PasswordReset';
@@ -24,7 +25,9 @@ function App() {
             path={DASHBOARD}
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <AppLayout>
+                  <Dashboard />
+                </AppLayout>
               </ProtectedRoute>
             }
           />
@@ -32,7 +35,9 @@ function App() {
             path={SURVEY}
             element={
               <ProtectedRoute>
-                <Survey />
+                <AppLayout>
+                  <Survey />
+                </AppLayout>
               </ProtectedRoute>
             }
           />
@@ -40,7 +45,9 @@ function App() {
             path="/dashboard/employee/:id"
             element={
               <ProtectedRoute>
-                <EmployeeDetail />
+                <AppLayout>
+                  <EmployeeDetail />
+                </AppLayout>
               </ProtectedRoute>
             }
           />

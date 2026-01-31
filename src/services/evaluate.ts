@@ -1,12 +1,3 @@
-// ================================================================
-// SCORING ALGORITHM - MIGRATED FROM LEGACY APP
-// This file contains the exact scoring logic PRESERVED FROM:
-// C:\Repos\leadership-loom\src\services\evaluate.js
-//
-// CRITICAL: All calculations, multipliers, and division factors
-// are preserved exactly. No modifications to scoring logic.
-// ================================================================
-
 interface SurveyData {
   metadata: {
     empname: string;

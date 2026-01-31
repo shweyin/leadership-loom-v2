@@ -11,7 +11,7 @@ import { SURVEY } from '../constants/routes';
 import type { SurveyResult } from '../types/database';
 
 export const Dashboard = () => {
-  const { appUser, signOut } = useAuth();
+  const { appUser } = useAuth();
   const navigate = useNavigate();
   const [surveys, setSurveys] = useState<SurveyResult[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,33 +32,8 @@ export const Dashboard = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <nav className="bg-white dark:bg-gray-800 shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                Leadership Loom
-              </h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                {appUser?.name || appUser?.email}
-              </span>
-              <button
-                onClick={() => signOut()}
-                className="px-4 py-2 text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-md"
-              >
-                Sign Out
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="mb-8">
+    <div>
+      <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
               Welcome, {appUser?.name || 'User'}
             </h2>
@@ -130,8 +105,6 @@ export const Dashboard = () => {
               </Card>
             </div>
           )}
-        </div>
-      </main>
     </div>
   );
 };

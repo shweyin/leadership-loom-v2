@@ -144,7 +144,10 @@ export function Survey() {
   };
 
   const handleSubmit = async () => {
-    if (!user) return;
+    if (!user) {
+      setError('Your session has expired. Please sign in again to submit the survey.');
+      return;
+    }
 
     setLoading(true);
     setError(null);
@@ -302,8 +305,8 @@ export function Survey() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="max-w-4xl mx-auto px-4">
+    <div className="py-2">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Leadership Assessment Survey</h1>
