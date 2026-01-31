@@ -1,46 +1,62 @@
-import { useRef, useCallback } from 'react';
-import { QuestionRadio } from './QuestionRadio';
-import { QuestionYesNo } from './QuestionYesNo';
-import { category3Questions, category3Titles } from '../../constants/proprietary';
+import { useCallback } from "react";
+import { QuestionRadio } from "./QuestionRadio";
+import { QuestionYesNo } from "./QuestionYesNo";
+import {
+  category3Questions,
+  category3Titles,
+} from "../../constants/proprietary";
 
 interface PersonalCharacteristicsFormProps {
   data: Record<string, string>;
   onChange: (questionId: string, value: string) => void;
 }
 
-export function PersonalCharacteristicsForm({ data, onChange }: PersonalCharacteristicsFormProps) {
-  const radioRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const yesNoRefs = useRef<(HTMLDivElement | null)[]>([]);
-
+export function PersonalCharacteristicsForm({
+  data,
+  onChange,
+}: PersonalCharacteristicsFormProps) {
   const totalRadioQuestions = category3Questions.radioQuestions.length;
   const totalYesNoQuestions = category3Questions.yesNoQuestions.length;
 
-  const advanceFromRadio = useCallback((index: number) => {
-    if (index < totalRadioQuestions - 1) {
-      // Move to next radio question
-      const nextElement = document.querySelector(`[data-radio-index="${index + 1}"]`) as HTMLElement;
-      nextElement?.focus();
-    } else if (totalYesNoQuestions > 0) {
-      // Move to first yes/no question
-      const nextElement = document.querySelector(`[data-yesno-index="0"]`) as HTMLElement;
-      nextElement?.focus();
-    }
-  }, [totalRadioQuestions, totalYesNoQuestions]);
+  const advanceFromRadio = useCallback(
+    (index: number) => {
+      if (index < totalRadioQuestions - 1) {
+        // Move to next radio question
+        const nextElement = document.querySelector(
+          `[data-radio-index="${index + 1}"]`,
+        ) as HTMLElement;
+        nextElement?.focus();
+      } else if (totalYesNoQuestions > 0) {
+        // Move to first yes/no question
+        const nextElement = document.querySelector(
+          `[data-yesno-index="0"]`,
+        ) as HTMLElement;
+        nextElement?.focus();
+      }
+    },
+    [totalRadioQuestions, totalYesNoQuestions],
+  );
 
-  const advanceFromYesNo = useCallback((index: number) => {
-    if (index < totalYesNoQuestions - 1) {
-      // Move to next yes/no question
-      const nextElement = document.querySelector(`[data-yesno-index="${index + 1}"]`) as HTMLElement;
-      nextElement?.focus();
-    }
-  }, [totalYesNoQuestions]);
+  const advanceFromYesNo = useCallback(
+    (index: number) => {
+      if (index < totalYesNoQuestions - 1) {
+        // Move to next yes/no question
+        const nextElement = document.querySelector(
+          `[data-yesno-index="${index + 1}"]`,
+        ) as HTMLElement;
+        nextElement?.focus();
+      }
+    },
+    [totalYesNoQuestions],
+  );
 
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold mb-2">{category3Titles.title}</h2>
         <p className="text-gray-600 dark:text-gray-400 mb-6">
-          Assess the employee's learning capabilities and personal characteristics.
+          Assess the employee's learning capabilities and personal
+          characteristics.
         </p>
       </div>
 
