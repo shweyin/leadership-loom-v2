@@ -9,7 +9,8 @@ import { UpdatePassword } from './routes/UpdatePassword';
 import { Dashboard } from './routes/Dashboard';
 import { Survey } from './routes/Survey';
 import { EmployeeDetail } from './routes/EmployeeDetail';
-import { SIGN_IN, SIGN_UP, PASSWORD_RESET, UPDATE_PASSWORD, DASHBOARD, SURVEY } from './constants/routes';
+import { Account } from './routes/Account';
+import { SIGN_IN, SIGN_UP, PASSWORD_RESET, UPDATE_PASSWORD, DASHBOARD, SURVEY, ACCOUNT } from './constants/routes';
 
 function App() {
   return (
@@ -47,6 +48,16 @@ function App() {
               <ProtectedRoute>
                 <AppLayout>
                   <EmployeeDetail />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ACCOUNT}
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <Account />
                 </AppLayout>
               </ProtectedRoute>
             }

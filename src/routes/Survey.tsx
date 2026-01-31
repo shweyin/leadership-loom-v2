@@ -345,17 +345,17 @@ export function Survey() {
           <CardContent className="p-8">{renderCurrentStep()}</CardContent>
         </Card>
 
-        {/* Navigation Buttons */}
-        <div className="flex justify-between">
+        {/* Navigation Buttons - Next comes first in tab order */}
+        <div className="flex justify-between flex-row-reverse">
+          <Button onClick={handleNext} disabled={loading}>
+            {loading ? 'Submitting...' : step === TOTAL_STEPS - 1 ? 'Submit Survey' : 'Next'}
+          </Button>
           <Button
             variant="outline"
             onClick={handlePrevious}
             disabled={step === 0 || loading}
           >
             Previous
-          </Button>
-          <Button onClick={handleNext} disabled={loading}>
-            {loading ? 'Submitting...' : step === TOTAL_STEPS - 1 ? 'Submit Survey' : 'Next'}
           </Button>
         </div>
       </div>

@@ -1,5 +1,6 @@
+import { useRef, useCallback } from 'react';
 import { QuestionRadio } from './QuestionRadio';
-import { Label } from '../ui/label';
+import { QuestionYesNo } from './QuestionYesNo';
 import { category3Questions, category3Titles } from '../../constants/proprietary';
 
 interface PersonalCharacteristicsFormProps {
@@ -8,6 +9,32 @@ interface PersonalCharacteristicsFormProps {
 }
 
 export function PersonalCharacteristicsForm({ data, onChange }: PersonalCharacteristicsFormProps) {
+  const radioRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const yesNoRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const totalRadioQuestions = category3Questions.radioQuestions.length;
+  const totalYesNoQuestions = category3Questions.yesNoQuestions.length;
+
+  const advanceFromRadio = useCallback((index: number) => {
+    if (index < totalRadioQuestions - 1) {
+      // Move to next radio question
+      const nextElement = document.querySelector(`[data-radio-index="${index + 1}"]`) as HTMLElement;
+      nextElement?.focus();
+    } else if (totalYesNoQuestions > 0) {
+      // Move to first yes/no question
+      const nextElement = document.querySelector(`[data-yesno-index="0"]`) as HTMLElement;
+      nextElement?.focus();
+    }
+  }, [totalRadioQuestions, totalYesNoQuestions]);
+
+  const advanceFromYesNo = useCallback((index: number) => {
+    if (index < totalYesNoQuestions - 1) {
+      // Move to next yes/no question
+      const nextElement = document.querySelector(`[data-yesno-index="${index + 1}"]`) as HTMLElement;
+      nextElement?.focus();
+    }
+  }, [totalYesNoQuestions]);
+
   return (
     <div className="space-y-6">
       <div>
@@ -20,51 +47,34 @@ export function PersonalCharacteristicsForm({ data, onChange }: PersonalCharacte
       {/* Radio Questions (Learning) */}
       <div className="space-y-8">
         <h3 className="text-lg font-semibold">Learning Ability</h3>
-        {category3Questions.radioQuestions.map((q) => (
-          <QuestionRadio
-            key={q.question}
-            question={q.question}
-            effectiveBehavior={q.effectiveBehaviours}
-            ineffectiveBehavior={q.ineffectiveBehaviours}
-            value={data[q.question]}
-            onChange={(value) => onChange(q.question, value)}
-          />
+        {category3Questions.radioQuestions.map((q, index) => (
+          <div key={q.question} data-radio-index={index}>
+            <QuestionRadio
+              question={q.question}
+              effectiveBehavior={q.effectiveBehaviours}
+              ineffectiveBehavior={q.ineffectiveBehaviours}
+              value={data[q.question]}
+              onChange={(value) => onChange(q.question, value)}
+              autoFocus={index === 0}
+              onAdvance={() => advanceFromRadio(index)}
+            />
+          </div>
         ))}
       </div>
 
       {/* Yes/No Questions */}
       <div className="space-y-6 mt-12">
         <h3 className="text-lg font-semibold">Personal Attributes</h3>
-        {category3Questions.yesNoQuestions.map((q) => (
-          <div key={q.question} className="border-b border-gray-200 dark:border-gray-700 pb-6">
-            <div className="mb-4">
-              <h4 className="font-semibold text-base mb-2">{q.descriptor}</h4>
-              <p className="text-sm text-gray-600 dark:text-gray-400">{q.criteria}</p>
-            </div>
-            <div className="flex gap-6">
-              <Label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name={q.question}
-                  value={`${q.question}-Yes`}
-                  checked={data[q.question] === `${q.question}-Yes`}
-                  onChange={() => onChange(q.question, `${q.question}-Yes`)}
-                  className="w-4 h-4"
-                />
-                <span className="text-green-600 dark:text-green-400 font-medium">Yes</span>
-              </Label>
-              <Label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name={q.question}
-                  value={`${q.question}-No`}
-                  checked={data[q.question] === `${q.question}-No`}
-                  onChange={() => onChange(q.question, `${q.question}-No`)}
-                  className="w-4 h-4"
-                />
-                <span className="text-red-600 dark:text-red-400 font-medium">No</span>
-              </Label>
-            </div>
+        {category3Questions.yesNoQuestions.map((q, index) => (
+          <div key={q.question} data-yesno-index={index}>
+            <QuestionYesNo
+              question={q.question}
+              descriptor={q.descriptor}
+              criteria={q.criteria}
+              value={data[q.question]}
+              onChange={(value) => onChange(q.question, value)}
+              onAdvance={() => advanceFromYesNo(index)}
+            />
           </div>
         ))}
       </div>

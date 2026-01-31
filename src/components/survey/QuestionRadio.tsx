@@ -1,3 +1,4 @@
+import { useRef, useEffect, useCallback } from 'react';
 import { Label } from '../ui/label';
 import { cn } from '../../lib/utils';
 
@@ -8,6 +9,8 @@ interface QuestionRadioProps {
   value?: string;
   onChange: (value: string) => void;
   className?: string;
+  autoFocus?: boolean;
+  onAdvance?: () => void;
 }
 
 export function QuestionRadio({
@@ -17,11 +20,45 @@ export function QuestionRadio({
   value,
   onChange,
   className,
+  autoFocus,
+  onAdvance,
 }: QuestionRadioProps) {
   const options = [1, 2, 3, 4, 5, 6];
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (autoFocus && containerRef.current) {
+      containerRef.current.focus();
+    }
+  }, [autoFocus]);
+
+  const handleSelect = useCallback((num: number) => {
+    const optionValue = `${question}-${num}`;
+    onChange(optionValue);
+    // Auto-advance to next question after selection
+    setTimeout(() => {
+      onAdvance?.();
+    }, 100);
+  }, [question, onChange, onAdvance]);
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    const num = parseInt(e.key, 10);
+    if (num >= 1 && num <= 6) {
+      e.preventDefault();
+      handleSelect(num);
+    }
+  }, [handleSelect]);
 
   return (
-    <div className={cn('border-b border-gray-200 dark:border-gray-700 pb-6 mb-6', className)}>
+    <div
+      ref={containerRef}
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      className={cn(
+        'border-b border-gray-200 dark:border-gray-700 pb-6 mb-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2',
+        className
+      )}
+    >
       {/* Question behaviors */}
       <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
         <div className="text-red-600 dark:text-red-400">
@@ -34,6 +71,11 @@ export function QuestionRadio({
         </div>
       </div>
 
+      {/* Keyboard hint */}
+      <div className="mb-2 text-xs text-gray-400 dark:text-gray-500 text-center">
+        Press 1-6 to select
+      </div>
+
       {/* Radio buttons */}
       <div className="flex items-center justify-center gap-4">
         {options.map((num) => {
@@ -44,6 +86,7 @@ export function QuestionRadio({
             <div key={num} className="flex flex-col items-center">
               <Label
                 htmlFor={optionValue}
+                onClick={() => handleSelect(num)}
                 className={cn(
                   'flex h-12 w-12 cursor-pointer items-center justify-center rounded-lg border-2 transition-all',
                   isSelected
@@ -59,8 +102,9 @@ export function QuestionRadio({
                 name={question}
                 value={optionValue}
                 checked={isSelected}
-                onChange={() => onChange(optionValue)}
+                onChange={() => handleSelect(num)}
                 className="sr-only"
+                tabIndex={-1}
               />
             </div>
           );

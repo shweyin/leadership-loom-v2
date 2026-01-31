@@ -1,4 +1,5 @@
-import { Label } from '../ui/label';
+import { useCallback } from 'react';
+import { QuestionYesNo } from './QuestionYesNo';
 import { category4Questions, category4Titles } from '../../constants/proprietary';
 
 interface PastPerformanceFormProps {
@@ -7,6 +8,15 @@ interface PastPerformanceFormProps {
 }
 
 export function PastPerformanceForm({ data, onChange }: PastPerformanceFormProps) {
+  const totalQuestions = category4Questions.length;
+
+  const advanceToNext = useCallback((index: number) => {
+    if (index < totalQuestions - 1) {
+      const nextElement = document.querySelector(`[data-question-index="${index + 1}"]`) as HTMLElement;
+      nextElement?.focus();
+    }
+  }, [totalQuestions]);
+
   return (
     <div className="space-y-6">
       <div>
@@ -17,36 +27,17 @@ export function PastPerformanceForm({ data, onChange }: PastPerformanceFormProps
       </div>
 
       <div className="space-y-6">
-        {category4Questions.map((q) => (
-          <div key={q.question} className="border-b border-gray-200 dark:border-gray-700 pb-6">
-            <div className="mb-4">
-              <h4 className="font-semibold text-base mb-2">{q.descriptor}</h4>
-              <p className="text-sm text-gray-600 dark:text-gray-400">{q.criteria}</p>
-            </div>
-            <div className="flex gap-6">
-              <Label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name={q.question}
-                  value={`${q.question}-Yes`}
-                  checked={data[q.question] === `${q.question}-Yes`}
-                  onChange={() => onChange(q.question, `${q.question}-Yes`)}
-                  className="w-4 h-4"
-                />
-                <span className="text-green-600 dark:text-green-400 font-medium">Yes</span>
-              </Label>
-              <Label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name={q.question}
-                  value={`${q.question}-No`}
-                  checked={data[q.question] === `${q.question}-No`}
-                  onChange={() => onChange(q.question, `${q.question}-No`)}
-                  className="w-4 h-4"
-                />
-                <span className="text-red-600 dark:text-red-400 font-medium">No</span>
-              </Label>
-            </div>
+        {category4Questions.map((q, index) => (
+          <div key={q.question} data-question-index={index}>
+            <QuestionYesNo
+              question={q.question}
+              descriptor={q.descriptor}
+              criteria={q.criteria}
+              value={data[q.question]}
+              onChange={(value) => onChange(q.question, value)}
+              autoFocus={index === 0}
+              onAdvance={() => advanceToNext(index)}
+            />
           </div>
         ))}
       </div>
