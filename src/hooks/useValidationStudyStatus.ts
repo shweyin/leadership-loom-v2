@@ -4,19 +4,24 @@ import { useAuth } from './useAuth';
 import type { ValidationStudyFormData } from '../services/evaluate';
 
 export function useValidationStudyStatus() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [isCompleted, setIsCompleted] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function checkStatus() {
+      // Wait for auth to finish loading before making any decisions
+      if (authLoading) {
+        return;
+      }
+
       if (!user) {
+        // Auth finished but no user - set loading false
         setIsLoading(false);
         return;
       }
 
-      // Reset loading state when user becomes available (handles race condition
-      // where user was initially null during auth loading)
+      // Ensure loading state is true while checking database
       setIsLoading(true);
 
       try {
@@ -41,7 +46,7 @@ export function useValidationStudyStatus() {
     }
 
     checkStatus();
-  }, [user]);
+  }, [user, authLoading]);
 
   const submitValidationStudy = async (data: ValidationStudyFormData): Promise<boolean> => {
     if (!user) return false;
