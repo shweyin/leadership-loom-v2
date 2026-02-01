@@ -12,7 +12,7 @@ import type { SurveyResult } from '../types/database';
 export const EmployeeDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [survey, setSurvey] = useState<SurveyResult | null>(null);
+  const [survey, setSurvey] = useState<(SurveyResult & { user: { name: string; email: string } | null }) | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('leadership');
 
@@ -65,10 +65,10 @@ export const EmployeeDetail = () => {
           {/* Employee Header */}
           <div className="mb-8">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              {survey.emp_name}
+              {survey.user?.name || 'Unknown'}
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-400">
-              {survey.emp_job_title}
+              {survey.user?.email || 'No email'}
             </p>
             <p className="text-sm text-gray-500 dark:text-gray-500">
               Assessed on {new Date(survey.created_at).toLocaleDateString('en-US', {

@@ -11,10 +11,10 @@ export async function getAllSurveyResults(): Promise<SurveyResult[]> {
   return data || [];
 }
 
-export async function getSurveyById(id: string): Promise<SurveyResult | null> {
+export async function getSurveyById(id: string): Promise<(SurveyResult & { user: { name: string; email: string } | null }) | null> {
   const { data, error } = await supabase
     .from('survey_results')
-    .select('*')
+    .select('*, user:users!user_id(name, email)')
     .eq('id', id)
     .single();
 

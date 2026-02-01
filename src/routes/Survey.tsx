@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useSurveyProgress } from '../hooks/useSurveyProgress';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Progress } from '../components/ui/progress';
-import { MetadataForm } from '../components/survey/MetadataForm';
 import { ExperienceForm } from '../components/survey/ExperienceForm';
 import { LeadershipForm } from '../components/survey/LeadershipForm';
 import { AdaptForm } from '../components/survey/AdaptForm';
@@ -16,6 +15,7 @@ import { PlanningForm } from '../components/survey/PlanningForm';
 import { StrategicThinkingForm } from '../components/survey/StrategicThinkingForm';
 import { PersonalCharacteristicsForm } from '../components/survey/PersonalCharacteristicsForm';
 import { PastPerformanceForm } from '../components/survey/PastPerformanceForm';
+import { Tooltip } from '../components/ui/tooltip';
 import evaluate from '../services/evaluate';
 import { supabase } from '../lib/supabase';
 import { DASHBOARD } from '../constants/routes';
@@ -31,11 +31,9 @@ import {
   category4Questions,
 } from '../constants/proprietary';
 
-const TOTAL_STEPS = 11;
+const TOTAL_STEPS = 10;
 
 const STEP_TITLES = [
-  'Employee Information',
-  'Experience & Credentials',
   'Leadership',
   'Adapting and Responding to Change',
   'Working with People',
@@ -45,6 +43,7 @@ const STEP_TITLES = [
   'Strategic Thinking and Action',
   'Personal Characteristics',
   'Past Performance',
+  'Experience & Credentials',
 ];
 
 export function Survey() {
@@ -55,75 +54,59 @@ export function Survey() {
   const [error, setError] = useState<string | null>(null);
 
   // Calculate completion percentage for current step
-  const [completion, setCompletion] = useState(0);
-
-  useEffect(() => {
-    calculateCompletion();
-  }, [step, surveyData]);
-
-  const calculateCompletion = () => {
+  const completion = useMemo(() => {
     let filledCount = 0;
     let totalCount = 0;
 
     switch (step) {
-      case 0: // Metadata
-        totalCount = 3;
-        if (surveyData.metadata.empname) filledCount++;
-        if (surveyData.metadata.empid) filledCount++;
-        if (surveyData.metadata.empjobtitle) filledCount++;
-        break;
-      case 1: // Experience - not required
-        setCompletion(100);
-        return;
-      case 2: // Leadership
+      case 0: // Leadership
         totalCount = category2x1Questions.length;
         filledCount = Object.keys(surveyData.category2_1).length;
         break;
-      case 3: // Adapt
+      case 1: // Adapt
         totalCount = category2x2Questions.length;
         filledCount = Object.keys(surveyData.category2_2).length;
         break;
-      case 4: // Working with People
+      case 2: // Working with People
         totalCount = category2x3Questions.length;
         filledCount = Object.keys(surveyData.category2_3).length;
         break;
-      case 5: // Business Acumen
+      case 3: // Business Acumen
         totalCount = category2x4Questions.length;
         filledCount = Object.keys(surveyData.category2_4).length;
         break;
-      case 6: // Setting Goals
+      case 4: // Setting Goals
         totalCount = category2x5Questions.length;
         filledCount = Object.keys(surveyData.category2_5).length;
         break;
-      case 7: // Planning
+      case 5: // Planning
         totalCount = category2x6Questions.length;
         filledCount = Object.keys(surveyData.category2_6).length;
         break;
-      case 8: // Strategic Thinking
+      case 6: // Strategic Thinking
         totalCount = category2x7Questions.length;
         filledCount = Object.keys(surveyData.category2_7).length;
         break;
-      case 9: // Personal Characteristics
+      case 7: // Personal Characteristics
         totalCount = category3Questions.radioQuestions.length + category3Questions.yesNoQuestions.length;
         filledCount = Object.keys(surveyData.category3).length;
         break;
-      case 10: // Past Performance
+      case 8: // Past Performance
         totalCount = category4Questions.length;
         filledCount = Object.keys(surveyData.category4).length;
         break;
+      case 9: // Experience - not required
+        return 100;
     }
 
     const percent = totalCount > 0 ? (filledCount / totalCount) * 100 : 0;
-    setCompletion(Math.round(percent));
-  };
+    return Math.round(percent);
+  }, [step, surveyData]);
+
+  // Determine if Next button should be disabled due to incomplete fields
+  const isStepIncomplete = step !== 9 && completion < 100;
 
   const handleNext = async () => {
-    // Validate before proceeding (except for Experience which is optional)
-    if (step !== 1 && completion < 100) {
-      setError('Please complete all required fields before continuing.');
-      return;
-    }
-
     setError(null);
 
     if (step < TOTAL_STEPS - 1) {
@@ -159,9 +142,6 @@ export function Survey() {
       // Save to database
       const { error: dbError } = await supabase.from('survey_results').insert({
         user_id: user.id,
-        emp_name: surveyData.metadata.empname,
-        emp_id: surveyData.metadata.empid,
-        emp_job_title: surveyData.metadata.empjobtitle,
         experience: surveyData.category1.experience,
         licensing: surveyData.category1.licensing,
         other_experience: surveyData.category1.other,
@@ -202,24 +182,6 @@ export function Survey() {
     switch (step) {
       case 0:
         return (
-          <MetadataForm
-            data={surveyData.metadata}
-            onChange={(field, value) =>
-              updateSurveyData({ metadata: { ...surveyData.metadata, [field]: value } })
-            }
-          />
-        );
-      case 1:
-        return (
-          <ExperienceForm
-            data={surveyData.category1}
-            onChange={(field, value) =>
-              updateSurveyData({ category1: { ...surveyData.category1, [field]: value } })
-            }
-          />
-        );
-      case 2:
-        return (
           <LeadershipForm
             data={surveyData.category2_1}
             onChange={(questionId, value) =>
@@ -227,7 +189,7 @@ export function Survey() {
             }
           />
         );
-      case 3:
+      case 1:
         return (
           <AdaptForm
             data={surveyData.category2_2}
@@ -236,7 +198,7 @@ export function Survey() {
             }
           />
         );
-      case 4:
+      case 2:
         return (
           <WorkingWithPeopleForm
             data={surveyData.category2_3}
@@ -245,7 +207,7 @@ export function Survey() {
             }
           />
         );
-      case 5:
+      case 3:
         return (
           <BusinessAcumenForm
             data={surveyData.category2_4}
@@ -254,7 +216,7 @@ export function Survey() {
             }
           />
         );
-      case 6:
+      case 4:
         return (
           <SettingGoalsForm
             data={surveyData.category2_5}
@@ -263,7 +225,7 @@ export function Survey() {
             }
           />
         );
-      case 7:
+      case 5:
         return (
           <PlanningForm
             data={surveyData.category2_6}
@@ -272,7 +234,7 @@ export function Survey() {
             }
           />
         );
-      case 8:
+      case 6:
         return (
           <StrategicThinkingForm
             data={surveyData.category2_7}
@@ -281,7 +243,7 @@ export function Survey() {
             }
           />
         );
-      case 9:
+      case 7:
         return (
           <PersonalCharacteristicsForm
             data={surveyData.category3}
@@ -290,12 +252,21 @@ export function Survey() {
             }
           />
         );
-      case 10:
+      case 8:
         return (
           <PastPerformanceForm
             data={surveyData.category4}
             onChange={(questionId, value) =>
               updateSurveyData({ category4: { ...surveyData.category4, [questionId]: value } })
+            }
+          />
+        );
+      case 9:
+        return (
+          <ExperienceForm
+            data={surveyData.category1}
+            onChange={(field, value) =>
+              updateSurveyData({ category1: { ...surveyData.category1, [field]: value } })
             }
           />
         );
@@ -347,9 +318,19 @@ export function Survey() {
 
         {/* Navigation Buttons - Next comes first in tab order */}
         <div className="flex justify-between flex-row-reverse">
-          <Button onClick={handleNext} disabled={loading}>
-            {loading ? 'Submitting...' : step === TOTAL_STEPS - 1 ? 'Submit Survey' : 'Next'}
-          </Button>
+          {isStepIncomplete ? (
+            <Tooltip content="Please complete all required fields before continuing">
+              <span className="inline-block">
+                <Button disabled className="pointer-events-none">
+                  Next
+                </Button>
+              </span>
+            </Tooltip>
+          ) : (
+            <Button onClick={handleNext} disabled={loading}>
+              {loading ? 'Submitting...' : step === TOTAL_STEPS - 1 ? 'Submit Survey' : 'Next'}
+            </Button>
+          )}
           <Button
             variant="outline"
             onClick={handlePrevious}

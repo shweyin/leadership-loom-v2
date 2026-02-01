@@ -1,9 +1,4 @@
 interface SurveyData {
-  metadata: {
-    empname: string;
-    empid: string;
-    empjobtitle: string;
-  };
   category1: {
     experience: string;
     licensing: string;
@@ -222,11 +217,6 @@ const evaluate = (data: SurveyData): EvaluationResult => {
 
 // Default state for form initialization
 export const defaultState: SurveyData & EvaluationResult = {
-  metadata: {
-    empname: "",
-    empid: "",
-    empjobtitle: "",
-  },
   category1: {
     experience: "",
     licensing: "",

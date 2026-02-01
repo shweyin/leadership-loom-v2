@@ -67,7 +67,7 @@ export function NineBoxGrid({ surveys = [] }: NineBoxGridProps) {
               return (
                 <div
                   key={`${rowIndex}-${colIndex}`}
-                  className="border-2 border-gray-300 dark:border-gray-600 rounded-lg p-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors relative group"
+                  className="border-2 border-gray-300 dark:border-gray-600 rounded-lg p-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors relative"
                 >
                   <div className="font-semibold text-sm mb-1">{box.title}</div>
                   {count > 0 && (
@@ -75,7 +75,7 @@ export function NineBoxGrid({ surveys = [] }: NineBoxGridProps) {
                       {count}
                     </div>
                   )}
-                  <div className="text-xs text-gray-600 dark:text-gray-400 line-clamp-3 group-hover:line-clamp-none">
+                  <div className="text-xs text-gray-600 dark:text-gray-400">
                     {box.definition}
                   </div>
                 </div>

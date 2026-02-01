@@ -1,6 +1,6 @@
-import { Textarea } from '../ui/textarea';
-import { Label } from '../ui/label';
-import { category1Titles } from '../../constants/proprietary';
+import { Textarea } from "../ui/textarea";
+import { Label } from "../ui/label";
+import { category1Titles } from "../../constants/proprietary";
 
 interface ExperienceFormProps {
   data: {
@@ -30,8 +30,8 @@ export function ExperienceForm({ data, onChange }: ExperienceFormProps) {
             id="experience"
             placeholder="Describe relevant work experience..."
             value={data.experience}
-            onChange={(e) => onChange('experience', e.target.value)}
-            className="mt-2 min-h-[100px]"
+            onChange={(e) => onChange("experience", e.target.value)}
+            className="mt-2 min-h-25"
           />
         </div>
 
@@ -43,7 +43,7 @@ export function ExperienceForm({ data, onChange }: ExperienceFormProps) {
             id="licensing"
             placeholder="List any licenses, certifications, or credentials..."
             value={data.licensing}
-            onChange={(e) => onChange('licensing', e.target.value)}
+            onChange={(e) => onChange("licensing", e.target.value)}
             className="mt-2 min-h-[100px]"
           />
         </div>
@@ -56,7 +56,7 @@ export function ExperienceForm({ data, onChange }: ExperienceFormProps) {
             id="other"
             placeholder="Any other relevant information..."
             value={data.other}
-            onChange={(e) => onChange('other', e.target.value)}
+            onChange={(e) => onChange("other", e.target.value)}
             className="mt-2 min-h-[100px]"
           />
         </div>
