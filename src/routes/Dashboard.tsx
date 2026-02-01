@@ -1,6 +1,6 @@
 import { useAuth } from '../hooks/useAuth';
 import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { ScatterPlot } from '../components/dashboard/ScatterPlot';
@@ -10,26 +10,45 @@ import { getAllSurveyResults } from '../services/survey';
 import { SURVEY } from '../constants/routes';
 import type { SurveyResult } from '../types/database';
 
+const STALE_TIME = 5 * 60 * 1000; // 5 minutes
+
 export const Dashboard = () => {
   const { appUser } = useAuth();
   const navigate = useNavigate();
   const [surveys, setSurveys] = useState<SurveyResult[]>([]);
   const [loading, setLoading] = useState(true);
+  const lastFetchRef = useRef<number>(0);
+
+  const loadSurveys = useCallback(async () => {
+    try {
+      const data = await getAllSurveyResults();
+      setSurveys(data);
+      lastFetchRef.current = Date.now();
+    } catch (error) {
+      console.error('Error loading surveys:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    const loadSurveys = async () => {
-      try {
-        const data = await getAllSurveyResults();
-        setSurveys(data);
-      } catch (error) {
-        console.error('Error loading surveys:', error);
-      } finally {
-        setLoading(false);
+    loadSurveys();
+  }, [loadSurveys]);
+
+  // Refetch data when tab becomes visible after being stale
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        const timeSinceLastFetch = Date.now() - lastFetchRef.current;
+        if (timeSinceLastFetch > STALE_TIME) {
+          loadSurveys();
+        }
       }
     };
 
-    loadSurveys();
-  }, []);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [loadSurveys]);
 
   return (
     <div>

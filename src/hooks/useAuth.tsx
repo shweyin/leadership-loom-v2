@@ -70,8 +70,36 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
     );
 
+    // Refresh session when tab becomes visible (handles stale tabs)
+    const handleVisibilityChange = async () => {
+      if (document.visibilityState === 'visible') {
+        const { data: { session: currentSession }, error } = await supabase.auth.getSession();
+
+        if (error || !currentSession) {
+          // Session is invalid or expired, clear state
+          setSession(null);
+          setUser(null);
+          setAppUser(null);
+          return;
+        }
+
+        // Check if token needs refresh (expires within 60 seconds)
+        const expiresAt = currentSession.expires_at;
+        if (expiresAt && expiresAt * 1000 - Date.now() < 60000) {
+          const { data: { session: refreshedSession } } = await supabase.auth.refreshSession();
+          if (refreshedSession) {
+            setSession(refreshedSession);
+            setUser(refreshedSession.user);
+          }
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     return () => {
       subscription.unsubscribe();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 
@@ -96,13 +124,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const signOut = async () => {
     try {
       await supabase.auth.signOut();
+    } catch (error) {
+      // Even if signOut fails (e.g., expired session), we still want to clear local state
+      console.error('Error signing out:', error);
+    } finally {
+      // Always clear local state and redirect, regardless of API success
       setUser(null);
       setAppUser(null);
       setSession(null);
       navigate(SIGN_IN);
-    } catch (error) {
-      console.error('Error signing out:', error);
-      throw error;
     }
   };
 
