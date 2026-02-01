@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useSurveyProgress } from '../hooks/useSurveyProgress';
+import { useValidationStudyStatus } from '../hooks/useValidationStudyStatus';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Progress } from '../components/ui/progress';
@@ -15,10 +16,15 @@ import { PlanningForm } from '../components/survey/PlanningForm';
 import { StrategicThinkingForm } from '../components/survey/StrategicThinkingForm';
 import { PersonalCharacteristicsForm } from '../components/survey/PersonalCharacteristicsForm';
 import { PastPerformanceForm } from '../components/survey/PastPerformanceForm';
+import { ValidationStudyForm } from '../components/survey/ValidationStudyForm';
 import { Tooltip } from '../components/ui/tooltip';
 import evaluate from '../services/evaluate';
 import { supabase } from '../lib/supabase';
 import { DASHBOARD } from '../constants/routes';
+import {
+  validationStudySelectQuestions,
+  validationStudyYesNoQuestions,
+} from '../constants/validationStudy';
 import {
   category2x1Questions,
   category2x2Questions,
@@ -31,9 +37,7 @@ import {
   category4Questions,
 } from '../constants/proprietary';
 
-const TOTAL_STEPS = 10;
-
-const STEP_TITLES = [
+const BASE_STEP_TITLES = [
   'Leadership',
   'Adapting and Responding to Change',
   'Working with People',
@@ -50,64 +54,109 @@ export function Survey() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { step, setStep, surveyData, updateSurveyData, clearDraft } = useSurveyProgress();
+  const { isCompleted: validationStudyCompleted, isLoading: validationStudyLoading, submitValidationStudy } = useValidationStudyStatus();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Determine if we need to show the validation study
+  const showValidationStudy = validationStudyCompleted === false;
+
+  // Dynamic step configuration based on validation study status
+  const TOTAL_STEPS = showValidationStudy ? 11 : 10;
+  const STEP_TITLES = showValidationStudy
+    ? ['Validation Study', ...BASE_STEP_TITLES]
+    : BASE_STEP_TITLES;
 
   // Calculate completion percentage for current step
   const completion = useMemo(() => {
     let filledCount = 0;
     let totalCount = 0;
 
-    switch (step) {
-      case 0: // Leadership
+    // Adjust step for calculation based on whether validation study is shown
+    const adjustedStep = showValidationStudy ? step : step + 1;
+
+    switch (adjustedStep) {
+      case 0: // Validation Study (only when showValidationStudy is true)
+        totalCount = validationStudySelectQuestions.length + validationStudyYesNoQuestions.length;
+        const vsData = surveyData.validationStudy;
+        filledCount =
+          (vsData.role_level ? 1 : 0) +
+          (vsData.years_experience ? 1 : 0) +
+          (vsData.years_leadership ? 1 : 0) +
+          (vsData.direct_reports ? 1 : 0) +
+          (vsData.org_size ? 1 : 0) +
+          (vsData.org_sector ? 1 : 0) +
+          (vsData.geographic_region ? 1 : 0) +
+          (vsData.education_level ? 1 : 0) +
+          (vsData.previous_assessment !== undefined ? 1 : 0) +
+          (vsData.primary_language !== undefined ? 1 : 0) +
+          (vsData.voluntary_participation !== undefined ? 1 : 0) +
+          (vsData.data_consent !== undefined ? 1 : 0);
+        break;
+      case 1: // Leadership
         totalCount = category2x1Questions.length;
         filledCount = Object.keys(surveyData.category2_1).length;
         break;
-      case 1: // Adapt
+      case 2: // Adapt
         totalCount = category2x2Questions.length;
         filledCount = Object.keys(surveyData.category2_2).length;
         break;
-      case 2: // Working with People
+      case 3: // Working with People
         totalCount = category2x3Questions.length;
         filledCount = Object.keys(surveyData.category2_3).length;
         break;
-      case 3: // Business Acumen
+      case 4: // Business Acumen
         totalCount = category2x4Questions.length;
         filledCount = Object.keys(surveyData.category2_4).length;
         break;
-      case 4: // Setting Goals
+      case 5: // Setting Goals
         totalCount = category2x5Questions.length;
         filledCount = Object.keys(surveyData.category2_5).length;
         break;
-      case 5: // Planning
+      case 6: // Planning
         totalCount = category2x6Questions.length;
         filledCount = Object.keys(surveyData.category2_6).length;
         break;
-      case 6: // Strategic Thinking
+      case 7: // Strategic Thinking
         totalCount = category2x7Questions.length;
         filledCount = Object.keys(surveyData.category2_7).length;
         break;
-      case 7: // Personal Characteristics
+      case 8: // Personal Characteristics
         totalCount = category3Questions.radioQuestions.length + category3Questions.yesNoQuestions.length;
         filledCount = Object.keys(surveyData.category3).length;
         break;
-      case 8: // Past Performance
+      case 9: // Past Performance
         totalCount = category4Questions.length;
         filledCount = Object.keys(surveyData.category4).length;
         break;
-      case 9: // Experience - not required
+      case 10: // Experience - not required
         return 100;
     }
 
     const percent = totalCount > 0 ? (filledCount / totalCount) * 100 : 0;
     return Math.round(percent);
-  }, [step, surveyData]);
+  }, [step, surveyData, showValidationStudy]);
 
   // Determine if Next button should be disabled due to incomplete fields
-  const isStepIncomplete = step !== 9 && completion < 100;
+  // Experience step (last step) is not required
+  const isLastStep = step === TOTAL_STEPS - 1;
+  const isExperienceStep = showValidationStudy ? step === 10 : step === 9;
+  const isStepIncomplete = !isExperienceStep && completion < 100;
 
   const handleNext = async () => {
     setError(null);
+
+    // If this is the validation study step, submit it first
+    if (showValidationStudy && step === 0) {
+      setLoading(true);
+      const success = await submitValidationStudy(surveyData.validationStudy);
+      setLoading(false);
+
+      if (!success) {
+        setError('Failed to save validation study. Please try again.');
+        return;
+      }
+    }
 
     if (step < TOTAL_STEPS - 1) {
       setStep(step + 1);
@@ -119,7 +168,10 @@ export function Survey() {
   };
 
   const handlePrevious = () => {
-    if (step > 0) {
+    // Don't allow going back from Leadership step if validation study was just submitted
+    const minStep = showValidationStudy && validationStudyCompleted ? 1 : 0;
+
+    if (step > minStep) {
       setStep(step - 1);
       setError(null);
       window.scrollTo(0, 0);
@@ -179,8 +231,20 @@ export function Survey() {
   };
 
   const renderCurrentStep = () => {
-    switch (step) {
-      case 0:
+    // Adjust step for rendering based on whether validation study is shown
+    const adjustedStep = showValidationStudy ? step : step + 1;
+
+    switch (adjustedStep) {
+      case 0: // Validation Study
+        return (
+          <ValidationStudyForm
+            data={surveyData.validationStudy}
+            onChange={(field, value) =>
+              updateSurveyData({ validationStudy: { ...surveyData.validationStudy, [field]: value } })
+            }
+          />
+        );
+      case 1:
         return (
           <LeadershipForm
             data={surveyData.category2_1}
@@ -189,7 +253,7 @@ export function Survey() {
             }
           />
         );
-      case 1:
+      case 2:
         return (
           <AdaptForm
             data={surveyData.category2_2}
@@ -198,7 +262,7 @@ export function Survey() {
             }
           />
         );
-      case 2:
+      case 3:
         return (
           <WorkingWithPeopleForm
             data={surveyData.category2_3}
@@ -207,7 +271,7 @@ export function Survey() {
             }
           />
         );
-      case 3:
+      case 4:
         return (
           <BusinessAcumenForm
             data={surveyData.category2_4}
@@ -216,7 +280,7 @@ export function Survey() {
             }
           />
         );
-      case 4:
+      case 5:
         return (
           <SettingGoalsForm
             data={surveyData.category2_5}
@@ -225,7 +289,7 @@ export function Survey() {
             }
           />
         );
-      case 5:
+      case 6:
         return (
           <PlanningForm
             data={surveyData.category2_6}
@@ -234,7 +298,7 @@ export function Survey() {
             }
           />
         );
-      case 6:
+      case 7:
         return (
           <StrategicThinkingForm
             data={surveyData.category2_7}
@@ -243,7 +307,7 @@ export function Survey() {
             }
           />
         );
-      case 7:
+      case 8:
         return (
           <PersonalCharacteristicsForm
             data={surveyData.category3}
@@ -252,7 +316,7 @@ export function Survey() {
             }
           />
         );
-      case 8:
+      case 9:
         return (
           <PastPerformanceForm
             data={surveyData.category4}
@@ -261,7 +325,7 @@ export function Survey() {
             }
           />
         );
-      case 9:
+      case 10:
         return (
           <ExperienceForm
             data={surveyData.category1}
@@ -274,6 +338,19 @@ export function Survey() {
         return null;
     }
   };
+
+  // Show loading state while checking validation study status
+  if (validationStudyLoading) {
+    return (
+      <div className="py-2">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center justify-center h-64">
+            <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="py-2">
@@ -328,7 +405,7 @@ export function Survey() {
             </Tooltip>
           ) : (
             <Button onClick={handleNext} disabled={loading}>
-              {loading ? 'Submitting...' : step === TOTAL_STEPS - 1 ? 'Submit Survey' : 'Next'}
+              {loading ? 'Submitting...' : isLastStep ? 'Submit Survey' : 'Next'}
             </Button>
           )}
           <Button

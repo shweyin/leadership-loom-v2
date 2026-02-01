@@ -22,9 +22,6 @@ export interface Organization {
 export interface SurveyResult {
   id: string;
   user_id: string;
-  emp_name: string;
-  emp_id: string;
-  emp_job_title: string;
   experience: string | null;
   licensing: string | null;
   other_experience: string | null;
@@ -47,4 +44,22 @@ export interface SurveyResult {
   past_performance_breakdown: any | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface ValidationStudy {
+  id: string;
+  user_id: string;
+  role_level: string;
+  years_experience: string;
+  years_leadership: string;
+  direct_reports: string;
+  org_size: string;
+  org_sector: string;
+  geographic_region: string;
+  education_level: string;
+  previous_assessment: boolean;
+  primary_language: boolean;
+  voluntary_participation: boolean;
+  data_consent: boolean;
+  created_at: string;
 }

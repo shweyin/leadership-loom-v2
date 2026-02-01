@@ -1,4 +1,20 @@
+export interface ValidationStudyFormData {
+  role_level: string;
+  years_experience: string;
+  years_leadership: string;
+  direct_reports: string;
+  org_size: string;
+  org_sector: string;
+  geographic_region: string;
+  education_level: string;
+  previous_assessment: boolean | undefined;
+  primary_language: boolean | undefined;
+  voluntary_participation: boolean | undefined;
+  data_consent: boolean | undefined;
+}
+
 interface SurveyData {
+  validationStudy: ValidationStudyFormData;
   category1: {
     experience: string;
     licensing: string;
@@ -217,6 +233,20 @@ const evaluate = (data: SurveyData): EvaluationResult => {
 
 // Default state for form initialization
 export const defaultState: SurveyData & EvaluationResult = {
+  validationStudy: {
+    role_level: '',
+    years_experience: '',
+    years_leadership: '',
+    direct_reports: '',
+    org_size: '',
+    org_sector: '',
+    geographic_region: '',
+    education_level: '',
+    previous_assessment: undefined,
+    primary_language: undefined,
+    voluntary_participation: undefined,
+    data_consent: undefined,
+  },
   category1: {
     experience: "",
     licensing: "",

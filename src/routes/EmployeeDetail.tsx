@@ -1,20 +1,33 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { getSurveyById } from '../services/survey';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { LeadershipBarChart } from '../components/employee/LeadershipBarChart';
-import { PersonalBarChart } from '../components/employee/PersonalBarChart';
-import { ScatterPlot } from '../components/dashboard/ScatterPlot';
-import type { SurveyResult } from '../types/database';
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { getSurveyById } from "../services/survey";
+import { Button } from "../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+// import {
+//   Tabs,
+//   TabsContent,
+//   TabsList,
+//   TabsTrigger,
+// } from "../components/ui/tabs";
+// import { LeadershipBarChart } from "../components/employee/LeadershipBarChart";
+// import { PersonalBarChart } from "../components/employee/PersonalBarChart";
+import { ScatterPlot } from "../components/dashboard/ScatterPlot";
+import type { SurveyResult } from "../types/database";
 
 export const EmployeeDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [survey, setSurvey] = useState<(SurveyResult & { user: { name: string; email: string } | null }) | null>(null);
+  const [survey, setSurvey] = useState<
+    (SurveyResult & { user: { name: string; email: string } | null }) | null
+  >(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('leadership');
+  // const [activeTab, setActiveTab] = useState("leadership");
 
   useEffect(() => {
     const loadSurvey = async () => {
@@ -24,7 +37,7 @@ export const EmployeeDetail = () => {
         const data = await getSurveyById(id);
         setSurvey(data);
       } catch (error) {
-        console.error('Error loading survey:', error);
+        console.error("Error loading survey:", error);
       } finally {
         setLoading(false);
       }
@@ -48,7 +61,9 @@ export const EmployeeDetail = () => {
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
             Survey not found
           </h2>
-          <Button onClick={() => navigate('/dashboard')}>Back to Dashboard</Button>
+          <Button onClick={() => navigate("/dashboard")}>
+            Back to Dashboard
+          </Button>
         </div>
       </div>
     );
@@ -57,103 +72,112 @@ export const EmployeeDetail = () => {
   return (
     <div>
       <div className="mb-6">
-            <Button variant="outline" onClick={() => navigate('/dashboard')}>
-              ← Back to Dashboard
-            </Button>
-          </div>
+        <Button variant="outline" onClick={() => navigate("/dashboard")}>
+          ← Back to Dashboard
+        </Button>
+      </div>
 
-          {/* Employee Header */}
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              {survey.user?.name || 'Unknown'}
-            </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-400">
-              {survey.user?.email || 'No email'}
-            </p>
-            <p className="text-sm text-gray-500 dark:text-gray-500">
-              Assessed on {new Date(survey.created_at).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </p>
-          </div>
+      {/* Employee Header */}
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          {survey.user?.name || "Unknown"}
+        </h2>
+        <p className="text-lg text-gray-600 dark:text-gray-400">
+          {survey.user?.email || "No email"}
+        </p>
+        <p className="text-sm text-gray-500 dark:text-gray-500">
+          Assessed on{" "}
+          {new Date(survey.created_at).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </p>
+      </div>
 
-          <div className="space-y-8">
-            {/* Score Cards */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                    Total Score
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-orange-600 dark:text-orange-400">
-                    {survey.total_score || 0}
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-500">out of 300</p>
-                </CardContent>
-              </Card>
+      <div className="space-y-8">
+        {/* Score Cards */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                Total Score
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-orange-600 dark:text-orange-400">
+                {survey.total_score || 0}
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-500">
+                out of 300
+              </p>
+            </CardContent>
+          </Card>
 
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                    Leadership Potential
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
-                    {survey.total_leadership_potential || 0}
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-500">out of 280</p>
-                </CardContent>
-              </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                Leadership Potential
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                {survey.total_leadership_potential || 0}
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-500">
+                out of 280
+              </p>
+            </CardContent>
+          </Card>
 
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                    Personal Score
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
-                    {survey.total_personal_characteristics || 0}
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-500">out of 194</p>
-                </CardContent>
-              </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                Personal Score
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
+                {survey.total_personal_characteristics || 0}
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-500">
+                out of 194
+              </p>
+            </CardContent>
+          </Card>
 
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                    Past Performance
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-green-600 dark:text-green-400">
-                    {survey.total_past_performance || 0}
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-500">out of 6</p>
-                </CardContent>
-              </Card>
-            </div>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                Past Performance
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-green-600 dark:text-green-400">
+                {survey.total_past_performance || 0}
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-500">
+                out of 6
+              </p>
+            </CardContent>
+          </Card>
+        </div>
 
-            {/* Individual Scatter Plot */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Position on Scatter Plot</CardTitle>
-                <CardDescription>
-                  Leadership potential vs total performance score
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ScatterPlot surveys={[survey]} />
-              </CardContent>
-            </Card>
+        {/* Individual Scatter Plot */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Position on Scatter Plot</CardTitle>
+            <CardDescription>
+              Leadership potential vs total performance score
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ScatterPlot surveys={[survey]} />
+          </CardContent>
+        </Card>
 
-            {/* Success Report Tabs */}
-            <Card>
+        {/* Success Report Tabs */}
+        {/* <Card>
               <CardHeader>
                 <CardTitle>Success Report</CardTitle>
                 <CardDescription>
@@ -218,8 +242,8 @@ export const EmployeeDetail = () => {
                   </TabsContent>
                 </Tabs>
               </CardContent>
-            </Card>
-          </div>
+            </Card> */}
+      </div>
     </div>
   );
 };

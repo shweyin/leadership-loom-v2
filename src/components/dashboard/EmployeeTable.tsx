@@ -16,7 +16,7 @@ interface EmployeeTableProps {
 
 export function EmployeeTable({ surveys }: EmployeeTableProps) {
   const navigate = useNavigate();
-  const [sortField, setSortField] = useState<'created_at' | 'emp_name' | 'total_score' | 'total_leadership_potential'>('created_at');
+  const [sortField, setSortField] = useState<'created_at' | 'total_score' | 'total_leadership_potential'>('created_at');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
   const handleSort = (field: typeof sortField) => {
@@ -33,10 +33,6 @@ export function EmployeeTable({ surveys }: EmployeeTableProps) {
     let bVal: any;
 
     switch (sortField) {
-      case 'emp_name':
-        aVal = a.emp_name?.toLowerCase() || '';
-        bVal = b.emp_name?.toLowerCase() || '';
-        break;
       case 'total_score':
         aVal = a.total_score || 0;
         bVal = b.total_score || 0;
@@ -88,15 +84,6 @@ export function EmployeeTable({ surveys }: EmployeeTableProps) {
                 Date {sortField === 'created_at' && (sortDirection === 'asc' ? '↑' : '↓')}
               </button>
             </TableHead>
-            <TableHead>
-              <button
-                onClick={() => handleSort('emp_name')}
-                className="font-semibold hover:text-gray-900 dark:hover:text-white"
-              >
-                Employee {sortField === 'emp_name' && (sortDirection === 'asc' ? '↑' : '↓')}
-              </button>
-            </TableHead>
-            <TableHead>Job Title</TableHead>
             <TableHead className="text-right">
               <button
                 onClick={() => handleSort('total_leadership_potential')}
@@ -123,8 +110,6 @@ export function EmployeeTable({ surveys }: EmployeeTableProps) {
               className="cursor-pointer"
             >
               <TableCell>{formatDate(survey.created_at)}</TableCell>
-              <TableCell className="font-medium">{survey.emp_name}</TableCell>
-              <TableCell className="text-gray-600 dark:text-gray-400">{survey.emp_job_title}</TableCell>
               <TableCell className="text-right">{survey.total_leadership_potential || 0}</TableCell>
               <TableCell className="text-right font-semibold">{survey.total_score || 0}</TableCell>
             </TableRow>

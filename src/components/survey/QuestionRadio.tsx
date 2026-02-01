@@ -1,6 +1,6 @@
-import { useRef, useEffect, useCallback } from 'react';
-import { Label } from '../ui/label';
-import { cn } from '../../lib/utils';
+import { useRef, useEffect, useCallback } from "react";
+import { Label } from "../ui/label";
+import { cn } from "../../lib/utils";
 
 interface QuestionRadioProps {
   question: string;
@@ -32,22 +32,28 @@ export function QuestionRadio({
     }
   }, [autoFocus]);
 
-  const handleSelect = useCallback((num: number) => {
-    const optionValue = `${question}-${num}`;
-    onChange(optionValue);
-    // Auto-advance to next question after selection
-    setTimeout(() => {
-      onAdvance?.();
-    }, 100);
-  }, [question, onChange, onAdvance]);
+  const handleSelect = useCallback(
+    (num: number) => {
+      const optionValue = `${question}-${num}`;
+      onChange(optionValue);
+      // Auto-advance to next question after selection
+      setTimeout(() => {
+        onAdvance?.();
+      }, 100);
+    },
+    [question, onChange, onAdvance],
+  );
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    const num = parseInt(e.key, 10);
-    if (num >= 1 && num <= 6) {
-      e.preventDefault();
-      handleSelect(num);
-    }
-  }, [handleSelect]);
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      const num = parseInt(e.key, 10);
+      if (num >= 1 && num <= 6) {
+        e.preventDefault();
+        handleSelect(num);
+      }
+    },
+    [handleSelect],
+  );
 
   return (
     <>
@@ -56,8 +62,8 @@ export function QuestionRadio({
         tabIndex={0}
         onKeyDown={handleKeyDown}
         className={cn(
-          'pb-6 p-4 rounded-lg focus:outline-none focus:border focus:border-gray-400 dark:focus:border-gray-500',
-          className
+          "pb-6 p-4 rounded-lg focus:outline-none focus:border focus:border-gray-400 dark:focus:border-gray-500",
+          className,
         )}
       >
         {/* Question behaviors */}
@@ -84,10 +90,10 @@ export function QuestionRadio({
                   htmlFor={optionValue}
                   onClick={() => handleSelect(num)}
                   className={cn(
-                    'flex h-12 w-12 cursor-pointer items-center justify-center rounded-lg border-2 transition-all',
+                    "flex h-12 w-12 cursor-pointer items-center justify-center rounded-lg border-2 transition-all",
                     isSelected
-                      ? 'border-orange-500 bg-orange-500 text-white shadow-lg scale-110'
-                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:border-orange-400 hover:scale-105'
+                      ? "border-orange-300 bg-orange-300 text-white shadow-lg scale-110"
+                      : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:border-orange-300 hover:scale-105",
                   )}
                 >
                   {num}
