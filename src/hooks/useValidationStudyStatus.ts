@@ -15,6 +15,10 @@ export function useValidationStudyStatus() {
         return;
       }
 
+      // Reset loading state when user becomes available (handles race condition
+      // where user was initially null during auth loading)
+      setIsLoading(true);
+
       try {
         const { data, error } = await supabase
           .from('validation_study')
