@@ -75,8 +75,8 @@ export function QuestionYesNo({
             className={cn(
               'flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border-2 transition-all',
               isYesSelected
-                ? 'border-green-500 bg-green-50 dark:bg-green-900/30'
-                : 'border-transparent hover:border-green-300'
+                ? 'border-gray-500 bg-gray-50 dark:bg-gray-900/30'
+                : 'border-transparent hover:border-gray-400'
             )}
           >
             <input
@@ -88,15 +88,15 @@ export function QuestionYesNo({
               className="w-4 h-4"
               tabIndex={-1}
             />
-            <span className="text-green-600 dark:text-green-400 font-medium">Yes</span>
+            <span className="text-gray-700 dark:text-gray-300 font-medium">Yes</span>
           </Label>
           <Label
             onClick={() => handleSelect('No')}
             className={cn(
               'flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border-2 transition-all',
               isNoSelected
-                ? 'border-red-500 bg-red-50 dark:bg-red-900/30'
-                : 'border-transparent hover:border-red-300'
+                ? 'border-gray-500 bg-gray-50 dark:bg-gray-900/30'
+                : 'border-transparent hover:border-gray-400'
             )}
           >
             <input
@@ -108,7 +108,7 @@ export function QuestionYesNo({
               className="w-4 h-4"
               tabIndex={-1}
             />
-            <span className="text-red-600 dark:text-red-400 font-medium">No</span>
+            <span className="text-gray-700 dark:text-gray-300 font-medium">No</span>
           </Label>
         </div>
       </div>

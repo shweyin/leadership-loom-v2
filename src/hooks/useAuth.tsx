@@ -54,15 +54,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     });
 
     // Listen for auth changes
+    // IMPORTANT: This callback must be non-blocking (no await) to avoid
+    // deadlocks with supabase-js internal auth lock. See:
+    // https://github.com/supabase/supabase/pull/19902
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(
-      async (_event: AuthChangeEvent, session: Session | null) => {
+      (_event: AuthChangeEvent, session: Session | null) => {
         setSession(session);
         setUser(session?.user ?? null);
 
         if (session?.user) {
-          await fetchAppUser(session.user.id);
+          // Use setTimeout to avoid deadlock — fetchAppUser calls supabase
+          // which needs the auth lock that onAuthStateChange is holding
+          setTimeout(() => fetchAppUser(session.user.id), 0);
         } else {
           setAppUser(null);
           setLoading(false);
@@ -71,27 +76,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     );
 
     // Refresh session when tab becomes visible (handles stale tabs)
-    const handleVisibilityChange = async () => {
+    const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        const { data: { session: currentSession }, error } = await supabase.auth.getSession();
+        // Use setTimeout to avoid deadlock with auth lock when tab regains focus
+        setTimeout(async () => {
+          const { data: { session: currentSession }, error } = await supabase.auth.getSession();
 
-        if (error || !currentSession) {
-          // Session is invalid or expired, clear state
-          setSession(null);
-          setUser(null);
-          setAppUser(null);
-          return;
-        }
-
-        // Check if token needs refresh (expires within 60 seconds)
-        const expiresAt = currentSession.expires_at;
-        if (expiresAt && expiresAt * 1000 - Date.now() < 60000) {
-          const { data: { session: refreshedSession } } = await supabase.auth.refreshSession();
-          if (refreshedSession) {
-            setSession(refreshedSession);
-            setUser(refreshedSession.user);
+          if (error || !currentSession) {
+            setSession(null);
+            setUser(null);
+            setAppUser(null);
+            return;
           }
-        }
+
+          const expiresAt = currentSession.expires_at;
+          if (expiresAt && expiresAt * 1000 - Date.now() < 60000) {
+            await supabase.auth.refreshSession();
+          }
+        }, 0);
       }
     };
 

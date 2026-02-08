@@ -153,7 +153,7 @@ export const EmployeeDetail = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-green-600 dark:text-green-400">
+              <div className="text-3xl font-bold text-gray-700 dark:text-gray-300">
                 {survey.total_past_performance || 0}
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-500">

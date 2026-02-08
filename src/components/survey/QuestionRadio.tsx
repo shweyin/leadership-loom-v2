@@ -68,11 +68,11 @@ export function QuestionRadio({
       >
         {/* Question behaviors */}
         <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-          <div className="text-red-600 dark:text-red-400">
+          <div className="text-gray-600 dark:text-gray-400">
             <span className="font-semibold">Ineffective: </span>
             {ineffectiveBehavior}
           </div>
-          <div className="text-green-600 dark:text-green-400">
+          <div className="text-gray-600 dark:text-gray-400">
             <span className="font-semibold">Effective: </span>
             {effectiveBehavior}
           </div>

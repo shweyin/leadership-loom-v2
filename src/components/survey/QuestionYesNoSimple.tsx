@@ -68,8 +68,8 @@ export function QuestionYesNoSimple({
             className={cn(
               'flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border-2 transition-all',
               value === true
-                ? 'border-green-500 bg-green-50 dark:bg-green-900/30'
-                : 'border-gray-200 dark:border-gray-700 hover:border-green-300'
+                ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30'
+                : 'border-gray-200 dark:border-gray-700 hover:border-blue-300'
             )}
           >
             <input
@@ -82,7 +82,7 @@ export function QuestionYesNoSimple({
             />
             <span className={cn(
               'font-medium',
-              value === true ? 'text-green-600 dark:text-green-400' : ''
+              value === true ? 'text-blue-600 dark:text-blue-400' : ''
             )}>
               <span className="text-gray-400 mr-1">1.</span>
               Yes
@@ -93,8 +93,8 @@ export function QuestionYesNoSimple({
             className={cn(
               'flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border-2 transition-all',
               value === false
-                ? 'border-red-500 bg-red-50 dark:bg-red-900/30'
-                : 'border-gray-200 dark:border-gray-700 hover:border-red-300'
+                ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30'
+                : 'border-gray-200 dark:border-gray-700 hover:border-blue-300'
             )}
           >
             <input
@@ -107,7 +107,7 @@ export function QuestionYesNoSimple({
             />
             <span className={cn(
               'font-medium',
-              value === false ? 'text-red-600 dark:text-red-400' : ''
+              value === false ? 'text-blue-600 dark:text-blue-400' : ''
             )}>
               <span className="text-gray-400 mr-1">2.</span>
               No
