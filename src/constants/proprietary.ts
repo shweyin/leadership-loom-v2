@@ -505,25 +505,25 @@ export const category3Questions = {
       question: "personal-characteristics-7",
       descriptor: "Expressed Aspiration",
       criteria:
-        "This employee has explicitly expressed an interest in taking on more challenges and responsibilities in more senior critical roles",
+        "I have/the participant has explicitly expressed an interest in taking on more challenges and responsibilities in more senior critical roles",
     },
     {
       question: "personal-characteristics-8",
       descriptor: "Intent to Stay",
       criteria:
-        "This employee has explicitly expressed a desire to remain in order to grow their career in the foreseeable future",
+        "I have/the participant has explicitly expressed a desire to remain in order to grow their career in the foreseeable future",
     },
     {
       question: "personal-characteristics-9",
       descriptor: "Discretionary Effort",
       criteria:
-        "This employee consistently contributes more than is asked of them and expresses the learning that they experience when they go above and beyond what is asked of them",
+        "I/the participant consistently contributes more than is asked of them and expresses the learning that they experience when they go above and beyond what is asked of them",
     },
     {
       question: "personal-characteristics-10",
       descriptor: "Motivation",
       criteria:
-        "This employee's behaviour demonstrates a motivation to learn new things, expand their understanding of the organization's operations and make a bigger contribution to the organization's future success",
+        "I/the participant's behaviour demonstrates a motivation to learn new things, expand their understanding of the organization's operations and make a bigger contribution to the organization's future success",
     },
   ] as YesNoQuestion[],
 };
@@ -533,19 +533,19 @@ export const category4Questions: YesNoQuestion[] = [
     question: "past-performance-1",
     descriptor: "Performance Appraisals",
     criteria:
-      "This employee has achieved nothing less than a 'Satisfactory' rating in their past three Performance Evaluations",
+      "I have/the participant has achieved nothing less than a 'Satisfactory' rating in their past three Performance Evaluations",
   },
   {
     question: "past-performance-2",
     descriptor: "Cost Management",
     criteria:
-      "This employee appears keenly aware of the importance of cost management in the delivery of the organization's products and/or services and works to actively manage cost expenditures",
+      "I/the participant appears keenly aware of the importance of cost management in the delivery of the organization's products and/or services and works to actively manage cost expenditures",
   },
   {
     question: "past-performance-3",
     descriptor: "Individual Development Plan (IDP)",
     criteria:
-      "Does this employee have a current IDP that is being actively pursued?",
+      "I have/the participant has a current IDP that is being actively pursued",
   },
 ];
 
@@ -554,7 +554,7 @@ export const category1Titles = {
   experience2: "Licensing / Certifications",
   experience3: "Other",
   summary:
-    "Please list any Licensing, Credentials, Trainer Licensing, Experience and/or scope of practice that this employee has gained.",
+    "Please list any Licensing, Credentials, Trainer Licensing, Experience and/or scope of practice that that you/the participant have/has achieved.",
 };
 
 export const category2x1Titles = {
