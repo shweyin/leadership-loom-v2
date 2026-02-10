@@ -86,6 +86,8 @@ const getValue = (str: string | undefined): number => {
     res = 2;
   } else if (tempStr === "No") {
     res = 0;
+  } else if (tempStr === "N/A") {
+    res = 1;
   }
   return res;
 };
@@ -234,14 +236,14 @@ const evaluate = (data: SurveyData): EvaluationResult => {
 // Default state for form initialization
 export const defaultState: SurveyData & EvaluationResult = {
   validationStudy: {
-    role_level: '',
-    years_experience: '',
-    years_leadership: '',
-    direct_reports: '',
-    org_size: '',
-    org_sector: '',
-    geographic_region: '',
-    education_level: '',
+    role_level: "",
+    years_experience: "",
+    years_leadership: "",
+    direct_reports: "",
+    org_size: "",
+    org_sector: "",
+    geographic_region: "",
+    education_level: "",
     previous_assessment: undefined,
     primary_language: undefined,
     voluntary_participation: undefined,

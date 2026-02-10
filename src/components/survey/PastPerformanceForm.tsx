@@ -1,31 +1,42 @@
-import { useCallback } from 'react';
-import { QuestionYesNo } from './QuestionYesNo';
-import { category4Questions, category4Titles } from '../../constants/proprietary';
+import { useCallback } from "react";
+import { QuestionYesNo } from "./QuestionYesNo";
+import {
+  category4Questions,
+  category4Titles,
+} from "../../constants/proprietary";
 
 interface PastPerformanceFormProps {
   data: Record<string, string>;
   onChange: (questionId: string, value: string) => void;
 }
 
-export function PastPerformanceForm({ data, onChange }: PastPerformanceFormProps) {
+export function PastPerformanceForm({
+  data,
+  onChange,
+}: PastPerformanceFormProps) {
   const totalQuestions = category4Questions.length;
 
-  const advanceToNext = useCallback((index: number) => {
-    if (index < totalQuestions - 1) {
-      const nextElement = document.querySelector(`[data-question-index="${index + 1}"]`) as HTMLElement;
-      nextElement?.focus();
-    }
-  }, [totalQuestions]);
+  const advanceToNext = useCallback(
+    (index: number) => {
+      if (index < totalQuestions - 1) {
+        const nextElement = document.querySelector(
+          `[data-question-index="${index + 1}"]`,
+        ) as HTMLElement;
+        nextElement?.focus();
+      }
+    },
+    [totalQuestions],
+  );
 
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold mb-2">{category4Titles.title}</h2>
         <p className="text-gray-600 dark:text-gray-400">
-          Evaluate the employee's past performance and development.
+          Evaluate the your/the participant's past performance and development.
         </p>
         <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
-          Press Y or 1 for Yes, N or 2 for No
+          Press Y or 1 for Yes, N or 2 for No, A or 3 for N/A
         </p>
       </div>
 
@@ -40,6 +51,7 @@ export function PastPerformanceForm({ data, onChange }: PastPerformanceFormProps
               onChange={(value) => onChange(q.question, value)}
               autoFocus={index === 0}
               onAdvance={() => advanceToNext(index)}
+              showNA
             />
           </div>
         ))}

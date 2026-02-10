@@ -11,6 +11,7 @@ interface QuestionYesNoProps {
   className?: string;
   autoFocus?: boolean;
   onAdvance?: () => void;
+  showNA?: boolean;
 }
 
 export function QuestionYesNo({
@@ -22,6 +23,7 @@ export function QuestionYesNo({
   className,
   autoFocus,
   onAdvance,
+  showNA,
 }: QuestionYesNoProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -31,7 +33,7 @@ export function QuestionYesNo({
     }
   }, [autoFocus]);
 
-  const handleSelect = useCallback((answer: 'Yes' | 'No') => {
+  const handleSelect = useCallback((answer: 'Yes' | 'No' | 'N/A') => {
     onChange(`${question}-${answer}`);
     // Auto-advance to next question after selection
     setTimeout(() => {
@@ -47,11 +49,15 @@ export function QuestionYesNo({
     } else if (key === 'n' || key === '2') {
       e.preventDefault();
       handleSelect('No');
+    } else if (showNA && (key === 'a' || key === '3')) {
+      e.preventDefault();
+      handleSelect('N/A');
     }
-  }, [handleSelect]);
+  }, [handleSelect, showNA]);
 
   const isYesSelected = value === `${question}-Yes`;
   const isNoSelected = value === `${question}-No`;
+  const isNASelected = value === `${question}-N/A`;
 
   return (
     <>
@@ -110,6 +116,28 @@ export function QuestionYesNo({
             />
             <span className="text-gray-700 dark:text-gray-300 font-medium">No</span>
           </Label>
+          {showNA && (
+            <Label
+              onClick={() => handleSelect('N/A')}
+              className={cn(
+                'flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border-2 transition-all',
+                isNASelected
+                  ? 'border-gray-500 bg-gray-50 dark:bg-gray-900/30'
+                  : 'border-transparent hover:border-gray-400'
+              )}
+            >
+              <input
+                type="radio"
+                name={question}
+                value={`${question}-N/A`}
+                checked={isNASelected}
+                onChange={() => handleSelect('N/A')}
+                className="w-4 h-4"
+                tabIndex={-1}
+              />
+              <span className="text-gray-700 dark:text-gray-300 font-medium">N/A</span>
+            </Label>
+          )}
         </div>
       </div>
       <hr className="my-6 border-gray-200 dark:border-gray-700" />
