@@ -1,26 +1,21 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
-interface LeadershipBarChartProps {
-  leadershipBreakdown: {
-    leadership_potential_1: number;
-    leadership_potential_2: number;
-    leadership_potential_3: number;
-    leadership_potential_4: number;
-    leadership_potential_5: number;
-    leadership_potential_6: number;
-    leadership_potential_7: number;
-  };
+interface DimensionValue {
+  name: string;
+  value: number;
 }
 
-const DIMENSION_LABELS = [
-  'Leading & Deciding',
-  'Supporting & Cooperating',
-  'Interacting & Presenting',
-  'Analyzing & Interpreting',
-  'Creating & Conceptualizing',
-  'Organizing & Executing',
-  'Adapting & Coping',
-];
+interface LeadershipBarChartProps {
+  leadershipBreakdown: {
+    leadership: DimensionValue;
+    adapt: DimensionValue;
+    working_with_people: DimensionValue;
+    business_acumen: DimensionValue;
+    setting_goals_and_deliver_results: DimensionValue;
+    planning_and_organizing: DimensionValue;
+    strategic_thinking_and_action: DimensionValue;
+  };
+}
 
 const COLORS = [
   '#ef4444', // red
@@ -32,50 +27,27 @@ const COLORS = [
   '#3b82f6', // blue
 ];
 
+const DIMENSION_KEYS = [
+  'leadership',
+  'adapt',
+  'working_with_people',
+  'business_acumen',
+  'setting_goals_and_deliver_results',
+  'planning_and_organizing',
+  'strategic_thinking_and_action',
+] as const;
+
 export function LeadershipBarChart({ leadershipBreakdown }: LeadershipBarChartProps) {
-  const data = [
-    {
-      name: DIMENSION_LABELS[0],
-      value: leadershipBreakdown.leadership_potential_1 || 0,
-      max: 40,
-    },
-    {
-      name: DIMENSION_LABELS[1],
-      value: leadershipBreakdown.leadership_potential_2 || 0,
-      max: 40,
-    },
-    {
-      name: DIMENSION_LABELS[2],
-      value: leadershipBreakdown.leadership_potential_3 || 0,
-      max: 40,
-    },
-    {
-      name: DIMENSION_LABELS[3],
-      value: leadershipBreakdown.leadership_potential_4 || 0,
-      max: 32,
-    },
-    {
-      name: DIMENSION_LABELS[4],
-      value: leadershipBreakdown.leadership_potential_5 || 0,
-      max: 40,
-    },
-    {
-      name: DIMENSION_LABELS[5],
-      value: leadershipBreakdown.leadership_potential_6 || 0,
-      max: 40,
-    },
-    {
-      name: DIMENSION_LABELS[6],
-      value: leadershipBreakdown.leadership_potential_7 || 0,
-      max: 36,
-    },
-  ];
+  const data = DIMENSION_KEYS.map((key) => ({
+    name: leadershipBreakdown[key].name,
+    value: Math.round(leadershipBreakdown[key].value),
+  }));
 
   return (
     <ResponsiveContainer width="100%" height={400}>
       <BarChart data={data} layout="vertical" margin={{ top: 5, right: 30, left: 150, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" className="stroke-gray-300 dark:stroke-gray-700" />
-        <XAxis type="number" domain={[0, 40]} className="text-gray-600 dark:text-gray-400" />
+        <XAxis type="number" domain={[0, 100]} className="text-gray-600 dark:text-gray-400" />
         <YAxis
           type="category"
           dataKey="name"
@@ -90,7 +62,7 @@ export function LeadershipBarChart({ leadershipBreakdown }: LeadershipBarChartPr
                 <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded shadow-lg">
                   <p className="font-semibold">{data.name}</p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Score: {data.value} / {data.max}
+                    Score: {data.value}%
                   </p>
                 </div>
               );

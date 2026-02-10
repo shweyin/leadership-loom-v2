@@ -9,14 +9,14 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-// import {
-//   Tabs,
-//   TabsContent,
-//   TabsList,
-//   TabsTrigger,
-// } from "../components/ui/tabs";
-// import { LeadershipBarChart } from "../components/employee/LeadershipBarChart";
-// import { PersonalBarChart } from "../components/employee/PersonalBarChart";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../components/ui/tabs";
+import { LeadershipBarChart } from "../components/employee/LeadershipBarChart";
+import { PersonalBarChart } from "../components/employee/PersonalBarChart";
 import { ScatterPlot } from "../components/dashboard/ScatterPlot";
 import type { SurveyResult } from "../types/database";
 
@@ -27,7 +27,7 @@ export const EmployeeDetail = () => {
     (SurveyResult & { user: { name: string; email: string } | null }) | null
   >(null);
   const [loading, setLoading] = useState(true);
-  // const [activeTab, setActiveTab] = useState("leadership");
+  const [activeTab, setActiveTab] = useState("leadership");
 
   useEffect(() => {
     const loadSurvey = async () => {
@@ -177,72 +177,81 @@ export const EmployeeDetail = () => {
         </Card>
 
         {/* Success Report Tabs */}
-        {/* <Card>
-              <CardHeader>
-                <CardTitle>Success Report</CardTitle>
-                <CardDescription>
-                  Detailed breakdown of leadership dimensions and personal characteristics
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Tabs value={activeTab} onValueChange={setActiveTab}>
-                  <TabsList>
-                    <TabsTrigger value="leadership">Leadership Dimensions</TabsTrigger>
-                    <TabsTrigger value="personal">Personal Characteristics</TabsTrigger>
-                    <TabsTrigger value="experience">Experience</TabsTrigger>
-                  </TabsList>
+        <Card>
+          <CardHeader>
+            <CardTitle>Success Report</CardTitle>
+            <CardDescription>
+              Detailed breakdown of leadership dimensions and personal
+              characteristics
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList>
+                <TabsTrigger value="leadership">
+                  Leadership Dimensions
+                </TabsTrigger>
+                <TabsTrigger value="personal">
+                  Personal Characteristics
+                </TabsTrigger>
+                <TabsTrigger value="experience">Experience</TabsTrigger>
+              </TabsList>
 
-                  <TabsContent value="leadership">
-                    {survey.leadership_breakdown ? (
-                      <LeadershipBarChart leadershipBreakdown={survey.leadership_breakdown} />
-                    ) : (
-                      <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                        No leadership data available
-                      </div>
-                    )}
-                  </TabsContent>
+              <TabsContent value="leadership">
+                {survey.leadership_breakdown ? (
+                  <LeadershipBarChart
+                    leadershipBreakdown={survey.leadership_breakdown}
+                  />
+                ) : (
+                  <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                    No leadership data available
+                  </div>
+                )}
+              </TabsContent>
 
-                  <TabsContent value="personal">
-                    {survey.personal_breakdown ? (
-                      <PersonalBarChart personalBreakdown={survey.personal_breakdown} />
-                    ) : (
-                      <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                        No personal characteristics data available
-                      </div>
-                    )}
-                  </TabsContent>
+              <TabsContent value="personal">
+                {survey.personal_breakdown ? (
+                  <PersonalBarChart
+                    personalBreakdown={survey.personal_breakdown}
+                  />
+                ) : (
+                  <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                    No personal characteristics data available
+                  </div>
+                )}
+              </TabsContent>
 
-                  <TabsContent value="experience">
-                    <div className="space-y-4 mt-4">
-                      <div>
-                        <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
-                          Experience
-                        </h4>
-                        <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-                          {survey.experience || 'Not provided'}
-                        </p>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
-                          Licensing
-                        </h4>
-                        <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-                          {survey.licensing || 'Not provided'}
-                        </p>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
-                          Other Experience
-                        </h4>
-                        <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-                          {survey.other_experience || 'Not provided'}
-                        </p>
-                      </div>
-                    </div>
-                  </TabsContent>
-                </Tabs>
-              </CardContent>
-            </Card> */}
+              <TabsContent value="experience">
+                <div className="space-y-4 mt-4">
+                  <div>
+                    <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+                      Experience
+                    </h4>
+                    <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                      {survey.experience || "Not provided"}
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+                      Licensing
+                    </h4>
+                    <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                      {survey.licensing || "Not provided"}
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+                      Other Experience
+                    </h4>
+                    <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                      {survey.other_experience || "Not provided"}
+                    </p>
+                  </div>
+                </div>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
