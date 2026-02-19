@@ -1,5 +1,5 @@
-import { matrixData } from '../../constants/proprietary';
-import type { SurveyResult } from '../../types/database';
+import { matrixData } from "../../constants/proprietary";
+import type { SurveyResult } from "../../types/database";
 
 interface NineBoxGridProps {
   surveys?: SurveyResult[];
@@ -24,17 +24,21 @@ export function NineBoxGrid({ surveys = [] }: NineBoxGridProps) {
 
   // Map grid positions to matrix data indices
   const gridMapping = [
-    [6, 7, 8], // Bottom row (Low performance)
-    [3, 4, 5], // Middle row (Medium performance)
     [0, 1, 2], // Top row (High performance)
+    [3, 4, 5], // Middle row (Medium performance)
+    [6, 7, 8], // Bottom row (Low performance)
   ];
 
   // Count employees in each box
-  const boxCounts: number[][] = [[0,0,0], [0,0,0], [0,0,0]];
-  surveys.forEach(survey => {
+  const boxCounts: number[][] = [
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+  ];
+  surveys.forEach((survey) => {
     const pos = getGridPosition(
       survey.total_leadership_potential || 0,
-      survey.total_score || 0
+      survey.total_score || 0,
     );
     boxCounts[2 - pos.y][pos.x]++; // Invert Y for display
   });
@@ -59,7 +63,7 @@ export function NineBoxGrid({ surveys = [] }: NineBoxGridProps) {
 
         {/* Grid */}
         <div className="flex-1 grid grid-cols-3 gap-2">
-          {gridMapping.map((row, rowIndex) => (
+          {gridMapping.map((row, rowIndex) =>
             row.map((dataIndex, colIndex) => {
               const box = matrixData[dataIndex];
               const count = boxCounts[rowIndex][colIndex];
@@ -80,8 +84,8 @@ export function NineBoxGrid({ surveys = [] }: NineBoxGridProps) {
                   </div>
                 </div>
               );
-            })
-          ))}
+            }),
+          )}
         </div>
       </div>
 
